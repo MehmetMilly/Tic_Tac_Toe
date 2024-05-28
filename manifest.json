@@ -1,0 +1,41 @@
+{
+  "name": "Tic Tac Toe",
+  "short_name": "Tic Tac Toe",
+  "description": "A Tic Tac Toe game made by Mehmet Milly.",
+  "id": "/Tic-Tac-Toe/",
+  "icons": [
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/Tic-Tac-Toe/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "scope": "/Tic-Tac-Toe/",
+  "launch_handler": {
+    "client_mode": "navigate"
+  },
+  "orientation": "any",
+  "screenshots": [],
+  "categories": ["games", "entertainment"],
+  "dir": "ltr",
+  "lang": "en",
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "web",
+      "url": "https://mehmetmilly.github.io/Tic-Tac-Toe/",
+      "id": "Tic-Tac-Toe"
+    }
+  ]
+}
