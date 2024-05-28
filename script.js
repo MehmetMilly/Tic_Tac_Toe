@@ -306,3 +306,17 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTurnIndicator();
 });
 
+navigator.serviceWorker.ready.then((registration) => {
+  return registration.sync.register('sync-tic-tac-toe');
+}).catch((err) => {
+  console.log('Sync registration failed: ', err);
+});
+
+navigator.serviceWorker.ready.then((registration) => {
+  registration.periodicSync.register({
+    tag: 'sync-tic-tac-toe-periodic',
+    minInterval: 24 * 60 * 60 * 1000 // 1 day
+  }).catch((err) => {
+    console.log('Periodic Sync registration failed: ', err);
+  });
+});
