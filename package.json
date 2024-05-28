@@ -1,0 +1,15 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "description": "A Tic Tac Toe game made by Mehmet Milly",
+  "main": "index.js",
+  "scripts": {
+    "start": "live-server",  # Replace with your actual start command if different
+    "build": "echo 'Building the project...' && exit 0",  # Replace with your actual build command
+    "deploy": "gh-pages -d dist"  # Make sure this matches the publish_dir in the workflow file
+  },
+  "dependencies": {
+    "live-server": "^1.2.1",
+    "gh-pages": "^3.2.3"  # Make sure this is installed if you are using it
+  }
+}
