@@ -48,3 +48,19 @@ self.addEventListener('activate', event => {
     })
   );
 });
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-tic-tac-toe') {
+    event.waitUntil(syncTicTacToe());
+  }
+});
+
+async function syncTicTacToe() {
+  // Your sync logic here
+  console.log('Syncing Tic Tac Toe...');
+  // This is where you would typically sync data with the server
+}
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'sync-tic-tac-toe-periodic') {
+    event.waitUntil(syncTicTacToe());
+  }
+});
