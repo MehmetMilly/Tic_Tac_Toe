@@ -102,6 +102,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!isPlayer1Turn && isPlayerVsAI) {
                 messageElement.textContent = "AI Wins! 😢";
                 lossSound.play();
+                player2Score++; // Update the AI's score
+                player2ScoreElement.textContent = player2Score;
             } else {
                 messageElement.textContent = `${winner} Wins! 🥳🎉`;
                 winSound.play();
