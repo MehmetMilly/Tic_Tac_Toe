@@ -44,6 +44,8 @@ h1 {
   cursor: pointer;
   transition: background 0.3s, box-shadow 0.3s;
   font-family: 'Baloo 2', sans-serif;
+  white-space: nowrap; /* Prevent text wrapping */
+  width: 200px; /* Ensure consistent width */
 }
 
 .mode-buttons button.selected {
@@ -183,6 +185,15 @@ h1 {
   display: flex;
   justify-content: center;
   gap: 10px;
+  margin-bottom: -15px;
+}
+
+.messed-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: -30px;
   margin-top: 20px; /* Increase space between buttons and Turn Indicator */
   margin-bottom: 15px;
 }
@@ -263,6 +274,11 @@ button:hover {
   .cell {
     width: 60px;
     height: 60px;
+  }
+
+  .mode-buttons button {
+    width: 45%; /* Adjust width to fit better on smaller screens */
+    font-size: 1rem; /* Adjust font size for better fit */
   }
 }
 
