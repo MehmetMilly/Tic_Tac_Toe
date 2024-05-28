@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icon-192x192.png">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
@@ -50,26 +48,26 @@
                 <div class="cell" data-cell></div>
             </div>
             <div id="turnIndicator" class="turn-indicator">Player 1's Turn</div>
-            <div class="button-container">
-                <button id="restartButton">Restart</button>
-                <button id="resetScoresButton" class="reset-scores-button">Reset Scores</button>
-            </div>
-            <div class="switching-container">
+            <div class="messed-buttons">
+                <div class="button-container">
+                    <button id="restartButton">Restart</button>
+                    <button id="resetScoresButton" class="reset-scores-button">Reset Scores</button>
+                </div>
                 <button id="switchPlayersButton">Switch Players</button>
             </div>
-        </div>
-        <div id="popup" class="popup">
-            <div class="popup-content">
-                <div id="message"></div>
-                <button id="popupRestartButton">Restart</button>
+            <div id="popup" class="popup">
+                <div class="popup-content">
+                    <div id="message"></div>
+                    <button id="popupRestartButton">Restart</button>
+                </div>
             </div>
+            <div id="confetti-container"></div>
+            <audio id="winSound" src="win-sound.mp3"></audio>
+            <audio id="moveSound" src="move-sound.mp3"></audio>
+            <audio id="drawSound" src="draw-sound.mp3"></audio>
+            <audio id="restartSound" src="restart-sound.mp3"></audio>
+            <audio id="lossSound" src="loss.mp3"></audio>
         </div>
-        <div id="confetti-container"></div>
-        <audio id="winSound" src="win-sound.mp3"></audio>
-        <audio id="moveSound" src="move-sound.mp3"></audio>
-        <audio id="drawSound" src="draw-sound.mp3"></audio>
-        <audio id="restartSound" src="restart-sound.mp3"></audio>
-        <audio id="lossSound" src="loss.mp3"></audio>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="script.js"></script>
