@@ -1,308 +1,273 @@
-body {
+/* Reset some basic elements */
+* {
   margin: 0;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 100vh;
-  background: linear-gradient(to right, #FF4890, #FF92D9);
-  font-family: 'Baloo 2', sans-serif;
-  padding-top: 20px;
-  position: relative;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-h1 {
-  color: #fff;
-  font-size: 4rem;
-  margin-bottom: 1px;
-  margin-top: 150px;
-  font-family: 'Pacifico', cursive;
-}
-
-.container {
+/* Body Styling with Gradient Background */
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #8ec5fc, #e0c3fc);
+  color: #333;
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
 }
 
-.mode-buttons {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 20px; /* Added margin between the buttons */
+/* Header Section */
+header {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.mode-buttons button {
-  background: #007bff;
-  color: #fff;
-  border: none;
-  padding: 10px 20px; /* Restored original padding */
-  font-size: 1.2rem; /* Restored original font size */
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s, box-shadow 0.3s;
-  font-family: 'Baloo 2', sans-serif;
-  white-space: nowrap; /* Prevent text wrapping */
-  width: 200px; /* Ensure consistent width */
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
 }
 
-.mode-buttons button.selected {
-  background: #0056b3;
-  box-shadow: 0 0 10px #0056b3;
-}
-
-.mode-buttons button:hover {
-  background: #0056b3;
-}
-
-#switchPlayersButton {
-  background-color: #FFA500; /* Example color: Orange */
-  color: white;
-  border: none;
-  padding: 10px 20px; /* Restored original padding */
-  cursor: pointer;
-  font-size: 1.2rem; /* Restored original font size */
-  border-radius: 5px;
-  margin-top: 30px; /* Added margin to position it below the other buttons */
-}
-
-.game-container {
+/* Game Mode Buttons */
+.game-modes {
   display: flex;
   justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
+.mode-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background: #6a82fb;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.mode-btn:hover,
+.mode-btn:focus {
+  background: #fc5c7d;
+  transform: scale(1.05);
+}
+
+/* Main Game Container */
+main {
+  width: 90%;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Scoreboard and Turn Indicator */
 .scoreboard {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 20px;
-  font-family: 'Baloo 2', sans-serif;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 1px;
-  border-radius: 10px;
-  font-size: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.scoreboard table {
-  width: 100%;
-  border-collapse: collapse;
+.scoreboard .player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.scoreboard input[type="text"] {
+  font-size: 1.2rem;
   text-align: center;
+  border: none;
+  border-bottom: 2px solid #6a82fb;
+  outline: none;
+  background: transparent;
+  color: #333;
+  margin-bottom: 5px;
+  width: 120px;
 }
 
-.scoreboard th, .scoreboard td {
-  padding: 10px;
-}
-
-.scoreboard th:nth-child(1), .scoreboard td:nth-child(1) {
-  color: #FF8F8F;
+.score {
+  font-size: 1.5rem;
   font-weight: bold;
-  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-}
-
-.scoreboard th:nth-child(2), .scoreboard td:nth-child(2) {
-  color: #73FBFD;
-  font-weight: bold;
-  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
-  cursor: pointer;
 }
 
 .turn-indicator {
-  color: #fff;
-  font-size: 1.5rem;
-  margin-top: 20px;
-  font-weight: bold;
-  background: #FDE8FF;
-  padding: 10px;
-  border-radius: 5px;
-  font-family: 'Baloo 2', sans-serif;
-  margin-bottom: 15px; /* Increase space between Turn Indicator and Buttons */
-}
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(3, 80px);
-  grid-template-rows: repeat(3, 80px);
-  gap: 10px;
-}
-
-.cell {
-  width: 80px;
-  height: 80px;
-  background-color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 3rem;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s, transform 0.3s;
-  position: relative;
-}
-
-.cell:hover {
-  background-color: #f1f1f1;
-  transform: scale(1.1);
-}
-
-.cell:active {
-  transform: scale(0.9);
-}
-
-.cell.x::before, .cell.o::before {
-  opacity: 0;
-  transform: scale(0);
-  animation: appear 0.5s forwards;
-}
-
-.cell.x::before {
-  content: 'X';
-  color: #EB3324;
-  text-shadow: 0 0 3px rgba(255, 95, 109, 0.8), 0 0 8px rgba(255, 95, 109, 0.6), 0 0 11px rgba(255, 95, 109, 0.4);
-}
-
-.cell.o::before {
-  content: 'O';
-  color: #0023F5;
-  text-shadow: 0 0 3px rgba(63, 114, 175, 0.8), 0 0 6px rgba(63, 114, 175, 0.6), 0 0 11px rgba(63, 114, 175, 0.4);
-}
-
-@keyframes appear {
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: -15px;
-}
-
-.messed-buttons {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: -30px;
-  margin-top: 20px; /* Increase space between buttons and Turn Indicator */
-  margin-bottom: 15px;
 }
 
-.switching-container {
+.active-turn {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #fc5c7d;
+}
+
+/* Game Grid */
+.game-grid {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
 }
 
-button {
-  background: #00C9A7;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  font-size: 1.2rem;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.cell {
+  position: relative;
+  background: #f1f1f1;
+  border: 2px solid #6a82fb;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s, box-shadow 0.3s;
-  font-family: 'Baloo 2', sans-serif;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
-button:hover {
-  background: #00bfa1;
+/* Make each cell square using padding trick */
+.cell::before {
+  content: "";
+  display: block;
+  padding-top: 100%;
 }
 
-.reset-scores-button {
-  background: #eb3324;
+.cell:hover {
+  background: #e0e0e0;
+  transform: scale(1.03);
 }
 
+.cell:active {
+  transform: scale(0.98);
+}
+
+/* Placeholder for cell content styling (X or O) */
+.cell::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Control Buttons */
+.controls {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.control-btn {
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background: #6a82fb;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.control-btn:hover,
+.control-btn:focus {
+  background: #fc5c7d;
+  transform: scale(1.05);
+}
+
+/* Popup for Endgame Notifications */
 .popup {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  justify-content: center;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease;
+}
+
+.popup.hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .popup-content {
   background: #fff;
-  padding: 20px;
   border-radius: 10px;
+  padding: 20px;
   text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.popup-content #message {
-  font-size: 1.5rem;
+.popup-content p {
   margin-bottom: 20px;
-  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.5rem;
 }
 
-.popup-content button {
-  background: #00C9A7;
-  color: #fff;
-  border: none;
+.popup-btn {
   padding: 10px 20px;
-  font-size: 1.2rem;
+  font-size: 1rem;
+  border: none;
   border-radius: 5px;
+  background: #6a82fb;
+  color: #fff;
   cursor: pointer;
-  transition: background 0.3s, box-shadow 0.3s;
-  font-family: 'Baloo 2', sans-serif;
+  transition: background 0.3s ease;
 }
 
-.popup-content button:hover {
-  background: #00bfa1;
+.popup-btn:hover,
+.popup-btn:focus {
+  background: #fc5c7d;
 }
 
+/* Responsive Layout Adjustments */
 @media (max-width: 600px) {
-  .board {
-    grid-template-columns: repeat(3, 60px);
-    grid-template-rows: repeat(3, 60px);
-  }
-
-  .cell {
-    width: 60px;
-    height: 60px;
-  }
-
-  .mode-buttons button {
-    width: 45%; /* Adjust width to fit better on smaller screens */
-    font-size: 1rem; /* Adjust font size for better fit */
+  .scoreboard,
+  .game-modes,
+  .controls {
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
-#confetti-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
+/* Confetti Animation Placeholder */
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(200px) rotate(360deg);
+    opacity: 0;
+  }
 }
 
 .confetti {
   position: absolute;
   width: 10px;
   height: 10px;
-  background-color: red;
-  opacity: 1;
+  background: #fc5c7d;
+  animation: confetti 1.5s ease-out forwards;
 }
 
-@keyframes confettiAnimation {
-  to {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
-  }
+/* Accessibility Focus States */
+:focus {
+  outline: 2px dashed #fc5c7d;
+  outline-offset: 4px;
 }
