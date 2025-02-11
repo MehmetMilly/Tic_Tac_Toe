@@ -1,324 +1,320 @@
+// Ensure the DOM is loaded before running the game logic.
 document.addEventListener("DOMContentLoaded", () => {
-    const cells = document.querySelectorAll("[data-cell]");
-    const board = document.getElementById("board");
-    const restartButton = document.getElementById("restartButton");
-    const resetScoresButton = document.getElementById("resetScoresButton");
-    const switchPlayersButton = document.getElementById("switchPlayersButton");
-    const turnIndicator = document.getElementById("turnIndicator");
-    const popup = document.getElementById("popup");
-    const popupRestartButton = document.getElementById("popupRestartButton");
-    const messageElement = document.getElementById("message");
-    const player1NameInput = document.getElementById("player1Name");
-    const player2NameInput = document.getElementById("player2Name");
-    const player1ScoreElement = document.getElementById("player1Score");
-    const player2ScoreElement = document.getElementById("player2Score");
+  // ======== DOM Elements ========
+  const cells = document.querySelectorAll(".cell");
+  const player1NameInput = document.getElementById("player1-name");
+  const player2NameInput = document.getElementById("player2-name");
+  const player1ScoreEl = document.getElementById("player1-score");
+  const player2ScoreEl = document.getElementById("player2-score");
+  const turnIndicatorEl = document.getElementById("current-turn");
+  const popup = document.getElementById("popup");
+  const endgameMessage = document.getElementById("endgame-message");
+  const closePopupBtn = document.getElementById("close-popup");
+  const restartBtn = document.getElementById("restart-btn");
+  const resetScoresBtn = document.getElementById("reset-scores-btn");
+  const switchNamesBtn = document.getElementById("switch-names-btn");
+  const modePvPBtn = document.getElementById("mode-pvp");
+  const modePvABtn = document.getElementById("mode-pva");
 
-    const winSound = document.getElementById("winSound");
-    const moveSound = document.getElementById("moveSound");
-    const drawSound = document.getElementById("drawSound");
-    const restartSound = document.getElementById("restartSound");
-    const lossSound = document.getElementById("lossSound");
+  // Audio Elements
+  const moveSound = document.getElementById("move-sound");
+  const winSound = document.getElementById("win-sound");
+  const drawSound = document.getElementById("draw-sound");
+  const lossSound = document.getElementById("loss-sound");
+  const restartSound = document.getElementById("restart-sound");
 
-    const confettiContainer = document.getElementById("confetti-container");
+  // ======== Game State Variables ========
+  let board = Array(9).fill(""); // Game board as an array of 9 cells
+  let currentPlayer = "X"; // "X" always starts
+  let gameActive = true; // Tracks whether the game is still active
+  let gameMode = "PvP"; // Default mode: Player vs Player. (PvA sets AI as "O")
+  let aiDifficulty = "hard"; // Options: "easy", "medium", "hard"
+  let scores = { X: 0, O: 0 };
 
-    let player1Score = 0;
-    let player2Score = 0;
-    let isPlayer1Turn = true;
-    let gameActive = true;
-    let isPlayerVsAI = false;
+  // Winning combinations: indexes corresponding to board cells.
+  const winningCombinations = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
 
-    let originalPlayer1Name = player1NameInput.textContent;
-    let originalPlayer2Name = player2NameInput.textContent;
+  // ======== Helper Functions ========
 
-    const pvpModeButton = document.getElementById("pvpModeButton");
-    const pvaModeButton = document.getElementById("pvaModeButton");
+  // Update the turn indicator to display the active player's name and color.
+  function updateTurnIndicator() {
+    const activeName =
+      currentPlayer === "X" ? player1NameInput.value : player2NameInput.value;
+    turnIndicatorEl.textContent = activeName;
+    // Change color based on the current player.
+    turnIndicatorEl.style.color = currentPlayer === "X" ? "#6a82fb" : "#fc5c7d";
+  }
 
-    const winPatterns = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6],
-    ];
+  // Update the scoreboard with current scores.
+  function updateScores() {
+    player1ScoreEl.textContent = scores.X;
+    player2ScoreEl.textContent = scores.O;
+  }
 
-    const updateTurnIndicator = () => {
-        if (isPlayer1Turn) {
-            turnIndicator.textContent = `${player1NameInput.textContent || 'Player 1'}'s Turn`;
-            turnIndicator.style.color = "#EB3324";
-        } else {
-            turnIndicator.textContent = `${player2NameInput.textContent || 'Player 2'}'s Turn`;
-            turnIndicator.style.color = "#3f72af";
-        }
-    };
-
-    const handleCellClick = (e) => {
-        const cell = e.target;
-        if (!gameActive || cell.classList.contains("x") || cell.classList.contains("o")) {
-            return;
-        }
-
-        const currentClass = isPlayer1Turn ? "x" : "o";
-        moveSound.currentTime = 0;
-        moveSound.play();
-        cell.classList.add(currentClass);
-
-        if (checkWin(currentClass)) {
-            endGame(false);
-        } else if (isDraw()) {
-            endGame(true);
-        } else {
-            isPlayer1Turn = !isPlayer1Turn;
-            updateTurnIndicator();
-            if (isPlayerVsAI && !isPlayer1Turn) {
-                setTimeout(aiMove, 500);
-            }
-        }
-    };
-
-    const checkWin = (currentClass) => {
-        return winPatterns.some((pattern) => {
-            return pattern.every((index) => {
-                return cells[index].classList.contains(currentClass);
-            });
-        });
-    };
-
-    const isDraw = () => {
-        return [...cells].every((cell) => {
-            return cell.classList.contains("x") || cell.classList.contains("o");
-        });
-    };
-
-    const endGame = (draw) => {
-        gameActive = false;
-        if (draw) {
-            messageElement.textContent = "It's a draw! 🤝";
-            drawSound.play();
-        } else {
-            const winner = isPlayer1Turn ? player1NameInput.textContent || 'Player 1' : player2NameInput.textContent || 'Player 2';
-            if (!isPlayer1Turn && isPlayerVsAI) {
-                messageElement.textContent = "AI Wins! 😢";
-                lossSound.play();
-                player2Score++; // Update the AI's score
-                player2ScoreElement.textContent = player2Score;
-            } else {
-                messageElement.textContent = `${winner} Wins! 🥳🎉`;
-                winSound.play();
-                if (isPlayer1Turn) {
-                    player1Score++;
-                    player1ScoreElement.textContent = player1Score;
-                } else {
-                    player2Score++;
-                    player2ScoreElement.textContent = player2Score;
-                }
-                triggerConfetti();
-            }
-        }
-        popup.style.display = "flex";
-    };
-
-    const restartGame = () => {
-        cells.forEach((cell) => {
-            cell.classList.remove("x");
-            cell.classList.remove("o");
-        });
-        gameActive = true;
-        isPlayer1Turn = true;
-        updateTurnIndicator();
-        popup.style.display = "none";
-        restartSound.currentTime = 0;
-        restartSound.play();
-    };
-
-    const resetScores = () => {
-        player1Score = 0;
-        player2Score = 0;
-        player1ScoreElement.textContent = player1Score;
-        player2ScoreElement.textContent = player2Score;
-        restartSound.currentTime = 0;
-        restartSound.play();
-    };
-
-    const aiMove = () => {
-        let bestScore = -Infinity;
-        let move;
-
-        cells.forEach((cell, index) => {
-            if (!cell.classList.contains("x") && !cell.classList.contains("o")) {
-                cell.classList.add("o");
-                let score = minimax(cells, 0, false, 0.9);
-                cell.classList.remove("o");
-                if (score > bestScore) {
-                    bestScore = score;
-                    move = index;
-                }
-            }
-        });
-
-        cells[move].classList.add("o");
-
-        if (checkWin("o")) {
-            endGame(false);
-        } else if (isDraw()) {
-            endGame(true);
-        } else {
-            isPlayer1Turn = true;
-            updateTurnIndicator();
-        }
-    };
-
-    const minimax = (newBoard, depth, isMaximizing, difficulty) => {
-        if (checkWin("o")) {
-            return 10 - depth;
-        } else if (checkWin("x")) {
-            return depth - 10;
-        } else if (isDraw()) {
-            return 0;
-        }
-
-        if (Math.random() > difficulty) {
-            return (Math.random() * 2 - 1) * 10;
-        }
-
-        if (isMaximizing) {
-            let bestScore = -Infinity;
-            newBoard.forEach((cell) => {
-                if (!cell.classList.contains("x") && !cell.classList.contains("o")) {
-                    cell.classList.add("o");
-                    let score = minimax(newBoard, depth + 1, false, difficulty);
-                    cell.classList.remove("o");
-                    bestScore = Math.max(score, bestScore);
-                }
-            });
-            return bestScore;
-        } else {
-            let bestScore = Infinity;
-            newBoard.forEach((cell) => {
-                if (!cell.classList.contains("x") && !cell.classList.contains("o")) {
-                    cell.classList.add("x");
-                    let score = minimax(newBoard, depth + 1, true, difficulty);
-                    cell.classList.remove("x");
-                    bestScore = Math.min(score, bestScore);
-                }
-            });
-            return bestScore;
-        }
-    };
-
-    const triggerConfetti = () => {
-        createConfetti();
-    };
-
-    function createConfetti() {
-        for (let i = 0; i < 200; i++) {
-            const confetti = document.createElement("div");
-            confetti.classList.add("confetti");
-            confetti.style.left = `${Math.random() * 100}%`;
-            confetti.style.top = `-10%`;
-            confetti.style.backgroundColor = getRandomColor();
-            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
-            confettiContainer.appendChild(confetti);
-            animateConfetti(confetti);
-        }
-    }
-
-    function animateConfetti(confetti) {
-        const duration = Math.random() * 3 + 2;
-        confetti.style.animation = `confettiAnimation ${duration}s forwards`;
-
-        confetti.addEventListener('animationend', () => {
-            confettiContainer.removeChild(confetti);
-        });
-    }
-
-    function getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-
-    const switchPlayers = () => {
-        moveSound.currentTime = 0; // Ensure the sound starts from the beginning
-        moveSound.play();  // Play move sound
-        const tempName = player1NameInput.textContent;
-        player1NameInput.textContent = player2NameInput.textContent;
-        player2NameInput.textContent = tempName;
-
-        const tempScore = player1Score;
-        player1Score = player2Score;
-        player2Score = tempScore;
-
-        player1ScoreElement.textContent = player1Score;
-        player2ScoreElement.textContent = player2Score;
-
-        isPlayer1Turn = true;
-        updateTurnIndicator();
-        restartGame();
-
-        if (isPlayerVsAI) {
-            isPlayer1Turn = !isPlayer1Turn;
-            setTimeout(aiMove, 500);
-        }
-    };
-
-    cells.forEach((cell) => {
-        cell.addEventListener("click", handleCellClick);
+  // Reset the game board (but not the scores).
+  function resetBoard() {
+    board = Array(9).fill("");
+    gameActive = true;
+    currentPlayer = "X";
+    cells.forEach(cell => {
+      cell.textContent = "";
+      cell.classList.remove("disabled");
     });
-
-    restartButton.addEventListener("click", restartGame);
-    popupRestartButton.addEventListener("click", restartGame);
-    resetScoresButton.addEventListener("click", resetScores);
-    switchPlayersButton.addEventListener("click", switchPlayers);
-
-    pvpModeButton.addEventListener("click", () => {
-        moveSound.currentTime = 0; // Ensure the sound starts from the beginning
-        moveSound.play(); // Play move sound
-        isPlayerVsAI = false;
-        pvpModeButton.classList.add('selected');
-        pvaModeButton.classList.remove('selected');
-        player2NameInput.textContent = originalPlayer2Name;
-        switchPlayersButton.disabled = false;
-        resetScores();
-        restartGame();
-    });
-
-    pvaModeButton.addEventListener("click", () => {
-        moveSound.currentTime = 0; // Ensure the sound starts from the beginning
-        moveSound.play(); // Play move sound
-        isPlayerVsAI = true;
-        pvpModeButton.classList.remove('selected');
-        pvaModeButton.classList.add('selected');
-        originalPlayer2Name = player2NameInput.textContent;
-        player2NameInput.textContent = 'AI';
-        switchPlayersButton.disabled = true;
-        resetScores();
-        restartGame();
-    });
-
-    player1NameInput.addEventListener("input", updateTurnIndicator);
-    player2NameInput.addEventListener("input", updateTurnIndicator);
-
-    pvpModeButton.click();
     updateTurnIndicator();
-});
+  }
 
-navigator.serviceWorker.ready.then((registration) => {
-  return registration.sync.register('sync-tic-tac-toe');
-}).catch((err) => {
-  console.log('Sync registration failed: ', err);
-});
+  // Restart the game with a new board and play a restart sound.
+  function restartGame() {
+    resetBoard();
+    restartSound.play();
+  }
 
-navigator.serviceWorker.ready.then((registration) => {
-  registration.periodicSync.register({
-    tag: 'sync-tic-tac-toe-periodic',
-    minInterval: 24 * 60 * 60 * 1000 // 1 day
-  }).catch((err) => {
-    console.log('Periodic Sync registration failed: ', err);
+  // Reset both the board and the player scores.
+  function resetScores() {
+    scores = { X: 0, O: 0 };
+    updateScores();
+    restartGame();
+  }
+
+  // Check if the current board state is a win for the given player.
+  function checkWin(boardState, player) {
+    return winningCombinations.some(combo =>
+      combo.every(index => boardState[index] === player)
+    );
+  }
+
+  // Check if the board is full (i.e., a draw).
+  function checkDraw(boardState) {
+    return boardState.every(cell => cell !== "");
+  }
+
+  // End the game by showing a popup with the result (win/draw) and playing the corresponding sound.
+  function endGame(result) {
+    gameActive = false;
+    if (result === "win") {
+      const winnerName =
+        currentPlayer === "X"
+          ? player1NameInput.value
+          : player2NameInput.value;
+      endgameMessage.textContent = `${winnerName} wins!`;
+      // Update score for the winning player.
+      scores[currentPlayer]++;
+      updateScores();
+      // Play win (or loss) sound depending on game mode.
+      if (gameMode === "PvA" && currentPlayer === "O") {
+        winSound.play();
+      } else if (gameMode === "PvA" && currentPlayer === "X") {
+        winSound.play();
+      } else {
+        winSound.play();
+      }
+      triggerConfetti();
+    } else if (result === "draw") {
+      endgameMessage.textContent = "It's a draw!";
+      drawSound.play();
+    }
+    popup.classList.remove("hidden");
+  }
+
+  // ======== Event Handlers ========
+
+  // Handles a player's click on a cell.
+  function handleCellClick(e) {
+    const cell = e.target;
+    const index = cell.getAttribute("data-cell-index");
+
+    // Ignore clicks if game over or cell is already filled.
+    if (!gameActive || board[index] !== "") return;
+
+    // Update the board and UI.
+    board[index] = currentPlayer;
+    cell.textContent = currentPlayer;
+    moveSound.play();
+
+    // Check for win or draw after the move.
+    if (checkWin(board, currentPlayer)) {
+      endGame("win");
+      return;
+    } else if (checkDraw(board)) {
+      endGame("draw");
+      return;
+    }
+
+    // Switch turn.
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
+    updateTurnIndicator();
+
+    // If in PvA mode and it is now the AI's turn, trigger the AI move.
+    if (gameMode === "PvA" && currentPlayer === "O" && gameActive) {
+      setTimeout(aiMove, 500); // Delay for realism
+    }
+  }
+
+  // ======== AI Functions ========
+
+  // AI move handler that chooses a move based on difficulty and then updates the board.
+  function aiMove() {
+    let index;
+    if (aiDifficulty === "easy") {
+      // For "easy", pick a random available move.
+      const availableMoves = board
+        .map((val, idx) => (val === "" ? idx : null))
+        .filter(val => val !== null);
+      index = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    } else {
+      // For "medium" and "hard", use the minimax algorithm.
+      // Limit search depth for "medium" difficulty.
+      const depthLimit = aiDifficulty === "medium" ? 3 : Infinity;
+      index = getBestMove(board, depthLimit);
+    }
+    // Make the AI move.
+    board[index] = currentPlayer;
+    const cell = document.querySelector(`.cell[data-cell-index="${index}"]`);
+    cell.textContent = currentPlayer;
+    moveSound.play();
+
+    // Check for win or draw.
+    if (checkWin(board, currentPlayer)) {
+      endGame("win");
+      return;
+    } else if (checkDraw(board)) {
+      endGame("draw");
+      return;
+    }
+
+    // Switch back to human's turn.
+    currentPlayer = "X";
+    updateTurnIndicator();
+  }
+
+  // Determines the best move for the AI using minimax.
+  function getBestMove(newBoard, depthLimit) {
+    let bestScore = -Infinity;
+    let move;
+    for (let i = 0; i < newBoard.length; i++) {
+      if (newBoard[i] === "") {
+        newBoard[i] = "O"; // AI plays as "O"
+        let score = minimax(newBoard, 0, false, depthLimit);
+        newBoard[i] = "";
+        if (score > bestScore) {
+          bestScore = score;
+          move = i;
+        }
+      }
+    }
+    return move;
+  }
+
+  // Minimax algorithm implementation.
+  // 'isMaximizing' is true when it's the AI's turn.
+  function minimax(newBoard, depth, isMaximizing, depthLimit) {
+    if (checkWin(newBoard, "O")) {
+      return 10 - depth;
+    }
+    if (checkWin(newBoard, "X")) {
+      return depth - 10;
+    }
+    if (checkDraw(newBoard) || depth === depthLimit) {
+      return 0;
+    }
+
+    if (isMaximizing) {
+      let bestScore = -Infinity;
+      for (let i = 0; i < newBoard.length; i++) {
+        if (newBoard[i] === "") {
+          newBoard[i] = "O";
+          let score = minimax(newBoard, depth + 1, false, depthLimit);
+          newBoard[i] = "";
+          bestScore = Math.max(score, bestScore);
+        }
+      }
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      for (let i = 0; i < newBoard.length; i++) {
+        if (newBoard[i] === "") {
+          newBoard[i] = "X";
+          let score = minimax(newBoard, depth + 1, true, depthLimit);
+          newBoard[i] = "";
+          bestScore = Math.min(score, bestScore);
+        }
+      }
+      return bestScore;
+    }
+  }
+
+  // ======== Confetti Effect ========
+  function triggerConfetti() {
+    // Create 30 confetti pieces with randomized positions and colors.
+    for (let i = 0; i < 30; i++) {
+      const confetti = document.createElement("div");
+      confetti.classList.add("confetti");
+      confetti.style.left = Math.random() * 100 + "%";
+      confetti.style.backgroundColor = getRandomColor();
+      document.body.appendChild(confetti);
+      // Remove each confetti piece after its animation ends.
+      confetti.addEventListener("animationend", () => {
+        confetti.remove();
+      });
+    }
+  }
+
+  // Helper to select a random color from a preset list.
+  function getRandomColor() {
+    const colors = ["#fc5c7d", "#6a82fb", "#fcb045", "#ff5f6d", "#d76d77"];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  // ======== Event Listeners Registration ========
+  cells.forEach(cell => {
+    cell.addEventListener("click", handleCellClick);
   });
+
+  restartBtn.addEventListener("click", restartGame);
+  resetScoresBtn.addEventListener("click", resetScores);
+  closePopupBtn.addEventListener("click", () => {
+    popup.classList.add("hidden");
+    if (!gameActive) {
+      resetBoard();
+    }
+  });
+
+  // Switch player names and their associated scores.
+  switchNamesBtn.addEventListener("click", () => {
+    let tempName = player1NameInput.value;
+    player1NameInput.value = player2NameInput.value;
+    player2NameInput.value = tempName;
+
+    let tempScore = scores.X;
+    scores.X = scores.O;
+    scores.O = tempScore;
+    updateScores();
+    updateTurnIndicator();
+  });
+
+  // Set game mode to Player vs Player.
+  modePvPBtn.addEventListener("click", () => {
+    gameMode = "PvP";
+    resetBoard();
+  });
+
+  // Set game mode to Player vs AI.
+  modePvABtn.addEventListener("click", () => {
+    gameMode = "PvA";
+    resetBoard();
+  });
+
+  // ======== Initialization ========
+  updateTurnIndicator();
+  updateScores();
 });
+
