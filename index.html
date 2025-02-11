@@ -1,86 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@500&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic Tac Toe</title>
+  <!-- Link to external CSS file for styling -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    
-    <div class="container">
-        <div class="mode-buttons">
-            <button id="pvpModeButton">Player vs Player</button>
-            <button id="pvaModeButton">Player vs AI</button>
-        </div>
-        <h1>Tic Tac Toe</h1>
-        <div class="scoreboard">
-            <table>
-                <tr>
-                    <th contenteditable="true" id="player1Name">Player 1</th>
-                    <th contenteditable="true" id="player2Name">Player 2</th>
-                </tr>
-                <tr>
-                    <td id="player1Score">0</td>
-                    <td id="player2Score">0</td>
-                </tr>
-            </table>
-        </div>
-        <div class="game-container">
-            <div id="board" class="board">
-                <div class="cell" data-cell></div>
-                <div class="cell" data-cell></div>
-                <div class="cell" data-cell></div>
-                <div class="cell" data-cell></div>
-                <div class="cell" data-cell></div>
-                <div class="cell" data-cell></div>
-                <div class="cell" data-cell></div>
-                <div class="cell" data-cell></div>
-                <div class="cell" data-cell></div>
-            </div>
-            <div id="turnIndicator" class="turn-indicator">Player 1's Turn</div>
-            <div class="messed-buttons">
-                <div class="button-container">
-                    <button id="restartButton">Restart</button>
-                    <button id="resetScoresButton" class="reset-scores-button">Reset Scores</button>
-                </div>
-                <button id="switchPlayersButton">Switch Players</button>
-            </div>
-            <div id="popup" class="popup">
-                <div class="popup-content">
-                    <div id="message"></div>
-                    <button id="popupRestartButton">Restart</button>
-                </div>
-            </div>
-            <div id="confetti-container"></div>
-            <audio id="winSound" src="win-sound.mp3"></audio>
-            <audio id="moveSound" src="move-sound.mp3"></audio>
-            <audio id="drawSound" src="draw-sound.mp3"></audio>
-            <audio id="restartSound" src="restart-sound.mp3"></audio>
-            <audio id="lossSound" src="loss.mp3"></audio>
-        </div>
+  <!-- Header Section -->
+  <header>
+    <h1>Tic Tac Toe</h1>
+    <!-- Game Mode Selection -->
+    <nav class="game-modes">
+      <button id="mode-pvp" class="mode-btn">Player vs Player (PvP)</button>
+      <button id="mode-pva" class="mode-btn">Player vs AI (PvA)</button>
+    </nav>
+  </header>
+
+  <!-- Main Game Area -->
+  <main>
+    <!-- Scoreboard and Turn Indicator -->
+    <section class="scoreboard">
+      <div class="player" id="player1-container">
+        <!-- Editable player name -->
+        <input
+          type="text"
+          id="player1-name"
+          value="Player 1"
+          aria-label="Player 1 Name"
+        />
+        <span id="player1-score" class="score">0</span>
+      </div>
+
+      <div class="turn-indicator">
+        <span>Current Turn: </span>
+        <!-- This element will be updated dynamically to show the active player's name with corresponding color -->
+        <span id="current-turn" class="active-turn"></span>
+      </div>
+
+      <div class="player" id="player2-container">
+        <!-- Editable player name -->
+        <input
+          type="text"
+          id="player2-name"
+          value="Player 2"
+          aria-label="Player 2 Name"
+        />
+        <span id="player2-score" class="score">0</span>
+      </div>
+    </section>
+
+    <!-- Game Grid -->
+    <section class="game-grid">
+      <div class="grid">
+        <!-- Create 9 cells for the Tic Tac Toe board -->
+        <div class="cell" data-cell-index="0" tabindex="0"></div>
+        <div class="cell" data-cell-index="1" tabindex="0"></div>
+        <div class="cell" data-cell-index="2" tabindex="0"></div>
+        <div class="cell" data-cell-index="3" tabindex="0"></div>
+        <div class="cell" data-cell-index="4" tabindex="0"></div>
+        <div class="cell" data-cell-index="5" tabindex="0"></div>
+        <div class="cell" data-cell-index="6" tabindex="0"></div>
+        <div class="cell" data-cell-index="7" tabindex="0"></div>
+        <div class="cell" data-cell-index="8" tabindex="0"></div>
+      </div>
+    </section>
+
+    <!-- Control Buttons -->
+    <section class="controls">
+      <button id="restart-btn" class="control-btn">Restart Game</button>
+      <button id="reset-scores-btn" class="control-btn">Reset Scores</button>
+      <button id="switch-names-btn" class="control-btn">
+        Switch Names & Scores
+      </button>
+    </section>
+  </main>
+
+  <!-- Endgame Popup for Win/Draw Notifications -->
+  <div id="popup" class="popup hidden" role="dialog" aria-modal="true">
+    <div class="popup-content">
+      <p id="endgame-message"></p>
+      <button id="close-popup" class="popup-btn">Close</button>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script src="script.js"></script>
-    <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js').then(registration => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        }).catch(error => {
-          console.log('Service Worker registration failed:', error);
-        });
-      });
-    }
-  </script>
-</body>
+  </div>
+
+  <!-- Audio Elements for Game Feedback -->
+  <audio id="move-sound" src="sounds/move.mp3"></audio>
+  <audio id="win-sound" src="sounds/win.mp3"></audio>
+  <audio id="draw-sound" src="sounds/draw.mp3"></audio>
+  <audio id="loss-sound" src="sounds/loss.mp3"></audio>
+  <audio id="restart-sound" src="sounds/restart.mp3"></audio>
+
+  <!-- Link to the JavaScript file that controls game logic -->
+  <script src="app.js"></script>
+
+  </body>
 </html>
